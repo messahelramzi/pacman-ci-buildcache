@@ -60,6 +60,8 @@ jobs:
       run: |
         spack env activate openmp-env
 
+        spack mirror add --unsigned pacman-ci-buildcache-linux-openmp oci://ghcr.io/messahelramzi/pacman-ci-buildcache-linux-openmp:latest
+        
         spack mirror set --push \
           --oci-username-variable GITHUB_USER \
           --oci-password-variable GITHUB_TOKEN \
