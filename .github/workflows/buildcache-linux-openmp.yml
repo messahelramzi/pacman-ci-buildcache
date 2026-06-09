@@ -57,6 +57,13 @@ jobs:
         GITHUB_USER: ${{ github.actor }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        spack mirror set --push --oci-username-variable GITHUB_USER --oci-password-variable GITHUB_TOKEN pacman-ci-buildcache-linux-openmp
-        spack -e openmp-env buildcache push --base-image ubuntu:24.04 --tag latest --update-index pacman-ci-buildcache-linux-openmp
+        spack mirror set --push \
+        --oci-username-variable GITHUB_USER \
+        --oci-password-variable GITHUB_TOKEN \
+        pacman-ci-buildcache-linux-openmp
+        spack buildcache push \
+        --base-image ubuntu:24.04 \
+        --tag latest --update-index \
+        pacman-ci-buildcache-linux-openmp \
+        $(spack -e openmp-env find --format "{hash}")
       if: ${{ !cancelled() }}
