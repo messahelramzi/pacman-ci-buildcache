@@ -3,7 +3,7 @@
 name: CI
 
 env:
-  SPACK_ENV_FILE: spack_envs/spack-openmp.yaml
+  SPACK_ENV_FILE: spack_envs/spack_openmp.yaml
 
 # Controls when the workflow will run
 on:
