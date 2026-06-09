@@ -71,6 +71,6 @@ jobs:
           --base-image ubuntu:24.04 \
           --tag latest \
           --update-index \
-          --only packages \
+          --without-build-dependencies \
           pacman-ci-buildcache-linux-openmp      
       if: ${{ !cancelled() }}
