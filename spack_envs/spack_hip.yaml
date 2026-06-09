@@ -1,11 +1,10 @@
 spack:
-  concretizer:
-    unify: true
+  view: /opt/view
   specs:
     - gcc
     - cmake
     - doxygen
-    - lcov
+    - lcov@2.0
     - kokkos@5 +rocm amdgpu_target=gfx942 +openmp +serial
     - kokkos-kernels@5 +openmp +serial
     - arborx@2.1 ~mpi +rocm amdgpu_target=gfx942 +openmp +serial
@@ -22,8 +21,8 @@ spack:
       require: 'target=x86_64_v3'
 
   mirrors:
-    pacman-ci-buildcache-linux:
-      url: oci://ghcr.io/messahelramzi/pacman-ci-buildcache-linux:latest
+   sphiros-ci-buildcache-linux:
+      url: oci://ghcr.io/messahelramzi/sphiros-ci-buildcache-linux:latest
       binary: true
       signed: false
       access_pair:
