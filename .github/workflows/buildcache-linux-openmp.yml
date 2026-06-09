@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+env:
+  SPACK_ENV_FILE: spack_envs/spack-openmp.yaml
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Spack
+      uses: spack/setup-spack@v2
+
+    - name: Set buildcache
+      run: |
+        spack mirror add --unsigned pacman-ci-buildcache-linux-openmp oci://ghcr.io/messahelramzi/pacman-ci-buildcache-linux-openmp:latest
+        spack mirror remove github-actions-buildcache
+        spack mirror list
+
+    - name: Concretize
+      shell: spack-sh {0}
+      run: |
+        spack env create openmp-env $SPACK_ENV_FILE
+        spack -e openmp-env concretize
+
+    - name: Install
+      shell: spack-sh {0}
+      run: spack -e openmp-env install
+
+    - name: Run
+      shell: spack-sh {0}
+      run: |
+        spack env activate openmp-env
+        spack find
+
+    - name: Push packages and update index
+      env:
+        GITHUB_USER: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        spack mirror set --push --oci-username-variable GITHUB_USER --oci-password-variable GITHUB_TOKEN pacman-ci-buildcache-linux-openmp
+        spack -e openmp-env buildcache push --base-image ubuntu:24.04 --tag latest --update-index pacman-ci-buildcache-linux-openmp
+      if: ${{ !cancelled() }}
