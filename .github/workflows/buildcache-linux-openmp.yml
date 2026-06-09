@@ -64,6 +64,5 @@ jobs:
         spack buildcache push \
         --base-image ubuntu:24.04 \
         --tag latest --update-index \
-        pacman-ci-buildcache-linux-openmp \
-        $(spack -e openmp-env find --format "{hash}")
+        pacman-ci-buildcache-linux-openmp
       if: ${{ !cancelled() }}
